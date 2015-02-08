@@ -193,20 +193,6 @@ describe('clone()', function () {
         done();
     });
 
-    it('should copy a buffer', function (done) {
-        var tls = {
-            key: new Buffer([1, 2, 3, 4, 5]),
-            cert: new Buffer([1, 2, 3, 4, 5, 6, 10])
-        };
-
-        var copiedTls = Hoek.clone(tls);
-        expect(Buffer.isBuffer(copiedTls.key)).to.equal(true);
-        expect(JSON.stringify(copiedTls.key)).to.equal(JSON.stringify(tls.key));
-        expect(Buffer.isBuffer(copiedTls.cert)).to.equal(true);
-        expect(JSON.stringify(copiedTls.cert)).to.equal(JSON.stringify(tls.cert));
-        done();
-    });
-
     it('clones an object with a prototype', function (done) {
 
         var Obj = function () {
@@ -527,15 +513,6 @@ describe('merge()', function () {
 
         var b = Hoek.merge({ x: {} }, a);
         expect(a.x.getTime()).to.equal(b.x.getTime());
-        done();
-    });
-
-    it('overrides Buffer', function (done) {
-
-        var a = { x: new Buffer('abc') };
-
-        var b = Hoek.merge({ x: {} }, a);
-        expect(a.x.toString()).to.equal('abc');
         done();
     });
 });
@@ -1021,16 +998,6 @@ describe('deepEqual()', function () {
         expect(Hoek.deepEqual([1, 2, 3], [1, 3, 2])).to.be.false();
         expect(Hoek.deepEqual([1, 2, 3], [1, 2])).to.be.false();
         expect(Hoek.deepEqual([1], [1])).to.be.true();
-        done();
-    });
-
-    it('compares buffers', function (done) {
-
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2, 3]))).to.be.true();
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 3, 2]))).to.be.false();
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), new Buffer([1, 2]))).to.be.false();
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), {})).to.be.false();
-        expect(Hoek.deepEqual(new Buffer([1, 2, 3]), [1, 2, 3])).to.be.false();
         done();
     });
 
@@ -1720,83 +1687,6 @@ describe('escapeRegex()', function () {
     });
 });
 
-describe('Base64Url', function () {
-
-    var base64str = 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w';
-    var str = unescape('%00%01%02%03%04%05%06%07%08%09%0A%0B%0C%0D%0E%0F%10%11%12%13%14%15%16%17%18%19%1A%1B%1C%1D%1E%1F%20%21%22%23%24%25%26%27%28%29*+%2C-./0123456789%3A%3B%3C%3D%3E%3F@ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D%7E%7F%80%81%82%83%84%85%86%87%88%89%8A%8B%8C%8D%8E%8F%90%91%92%93%94%95%96%97%98%99%9A%9B%9C%9D%9E%9F%A0%A1%A2%A3%A4%A5%A6%A7%A8%A9%AA%AB%AC%AD%AE%AF%B0%B1%B2%B3%B4%B5%B6%B7%B8%B9%BA%BB%BC%BD%BE%BF%C0%C1%C2%C3%C4%C5%C6%C7%C8%C9%CA%CB%CC%CD%CE%CF%D0%D1%D2%D3%D4%D5%D6%D7%D8%D9%DA%DB%DC%DD%DE%DF%E0%E1%E2%E3%E4%E5%E6%E7%E8%E9%EA%EB%EC%ED%EE%EF%F0%F1%F2%F3%F4%F5%F6%F7%F8%F9%FA%FB%FC%FD%FE%FF');
-
-    describe('base64urlEncode()', function () {
-
-        it('should base64 URL-safe a string', function (done) {
-
-            expect(Hoek.base64urlEncode(str)).to.equal(base64str);
-            done();
-        });
-
-        it('encodes a buffer', function (done) {
-
-            expect(Hoek.base64urlEncode(new Buffer(str, 'binary'))).to.equal(base64str);
-            done();
-        });
-
-        it('should base64 URL-safe a hex string', function (done) {
-
-            var buffer = new Buffer(str, 'binary');
-            expect(Hoek.base64urlEncode(buffer.toString('hex'), 'hex')).to.equal(base64str);
-            done();
-        });
-
-        it('works on larger input strings', function (done) {
-
-            var input = Fs.readFileSync(Path.join(__dirname, 'index.js')).toString();
-            var encoded = Hoek.base64urlEncode(input);
-
-            expect(encoded).to.not.contain('+');
-            expect(encoded).to.not.contain('/');
-
-            var decoded = Hoek.base64urlDecode(encoded);
-
-            expect(decoded).to.equal(input);
-            done();
-        });
-    });
-
-    describe('base64urlDecode()', function () {
-
-        it('should un-base64 URL-safe a string', function (done) {
-
-            expect(Hoek.base64urlDecode(base64str)).to.equal(str);
-            done();
-        });
-
-        it('should un-base64 URL-safe a string into hex', function (done) {
-
-            expect(Hoek.base64urlDecode(base64str, 'hex')).to.equal(new Buffer(str, 'binary').toString('hex'));
-            done();
-        });
-
-        it('should un-base64 URL-safe a string and return a buffer', function (done) {
-
-            var buf = Hoek.base64urlDecode(base64str, 'buffer');
-            expect(buf instanceof Buffer).to.equal(true);
-            expect(buf.toString('binary')).to.equal(str);
-            done();
-        });
-
-        it('returns error on undefined input', function (done) {
-
-            expect(Hoek.base64urlDecode().message).to.exist();
-            done();
-        });
-
-        it('returns error on invalid input', function (done) {
-
-            expect(Hoek.base64urlDecode('*').message).to.exist();
-            done();
-        });
-    });
-});
-
 describe('escapeHeaderAttribute()', function () {
 
     it('should not alter ascii values', function (done) {
@@ -1915,61 +1805,6 @@ describe('once()', function () {
         method.x = 1;
         method = Hoek.once(method);
         expect(method.x).to.equal(1);
-        done();
-    });
-});
-
-describe('isAbsoltePath()', function () {
-
-    it('identifies if path is absolute on Unix without node support', { parallel: false }, function (done) {
-
-        var orig = Path.isAbsolute;
-        Path.isAbsolute = undefined;
-
-        expect(Hoek.isAbsolutePath('')).to.equal(false);
-        expect(Hoek.isAbsolutePath('a')).to.equal(false);
-        expect(Hoek.isAbsolutePath('./a')).to.equal(false);
-        expect(Hoek.isAbsolutePath('/a')).to.equal(true);
-        expect(Hoek.isAbsolutePath('/')).to.equal(true);
-
-        Path.isAbsolute = orig;
-
-        done();
-    });
-
-    it('identifies if path is absolute with fake node support', { parallel: false }, function (done) {
-
-        var orig = Path.isAbsolute;
-        Path.isAbsolute = function (path) { return path[0] === '/'; };
-
-        expect(Hoek.isAbsolutePath('', 'linux')).to.equal(false);
-        expect(Hoek.isAbsolutePath('a', 'linux')).to.equal(false);
-        expect(Hoek.isAbsolutePath('./a', 'linux')).to.equal(false);
-        expect(Hoek.isAbsolutePath('/a', 'linux')).to.equal(true);
-        expect(Hoek.isAbsolutePath('/', 'linux')).to.equal(true);
-
-        Path.isAbsolute = orig;
-
-        done();
-    });
-
-    it('identifies if path is absolute on Windows without node support', { parallel: false }, function (done) {
-
-        var orig = Path.isAbsolute;
-        Path.isAbsolute = undefined;
-
-        expect(Hoek.isAbsolutePath('//server/file', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('//server/file', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('\\\\server\\file', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('C:/Users/', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('C:\\Users\\', 'win32')).to.equal(true);
-        expect(Hoek.isAbsolutePath('C:cwd/another', 'win32')).to.equal(false);
-        expect(Hoek.isAbsolutePath('C:cwd\\another', 'win32')).to.equal(false);
-        expect(Hoek.isAbsolutePath('directory/directory', 'win32')).to.equal(false);
-        expect(Hoek.isAbsolutePath('directory\\directory', 'win32')).to.equal(false);
-
-        Path.isAbsolute = orig;
-
         done();
     });
 });
@@ -2152,58 +1987,6 @@ describe('transform()', function () {
 
         var result = Hoek.transform(undefined, {});
         expect(result).to.deep.equal({});
-
-        done();
-    });
-});
-
-describe('uniqueFilename()', function () {
-
-    it('generates a random file path', function (done) {
-
-        var result = Hoek.uniqueFilename('./test/modules');
-
-        expect(result).to.exist();
-        expect(result).to.be.a.string();
-        expect(result).to.contain('test/modules');
-        done();
-    });
-
-    it('is random enough to use in fast loops', function (done) {
-
-        var results = [];
-
-        for (var i = 0; i < 10; ++i) {
-            results[i] = Hoek.uniqueFilename('./test/modules');
-        }
-
-        var filter = results.filter(function (item, index, array) {
-
-            return array.indexOf(item) === index;
-        });
-
-        expect(filter.length).to.equal(10);
-        expect(results.length).to.equal(10);
-        done();
-
-    });
-
-    it('combines the random elements with a supplied character', function (done) {
-
-        var result = Hoek.uniqueFilename('./test', 'txt');
-
-        expect(result).to.contain('test/');
-        expect(result).to.contain('.txt');
-
-        done();
-    });
-
-    it('accepts extensions with a "." in it', function (done) {
-
-        var result = Hoek.uniqueFilename('./test', '.mp3');
-
-        expect(result).to.contain('test/');
-        expect(result).to.contain('.mp3');
 
         done();
     });

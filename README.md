@@ -1,6 +1,6 @@
 ![hoek Logo](https://raw.github.com/hapijs/hoek/master/images/hoek.png)
 
-Utility methods for the hapi ecosystem. This module is not intended to solve every problem for everyone, but rather as a central place to store hapi-specific methods. If you're looking for a general purpose utility module, check out [lodash](https://github.com/lodash/lodash) or [underscore](https://github.com/jashkenas/underscore).
+Utility methods for the joi-browser object validator module. This module is not intended to solve every problem for everyone, but rather as a central place to store hapi-specific methods. If you're looking for a general purpose utility module, check out [lodash](https://github.com/lodash/lodash) or [underscore](https://github.com/jashkenas/underscore).
 
 [![Build Status](https://secure.travis-ci.org/hapijs/hoek.png)](http://travis-ci.org/hapijs/hoek)
 
@@ -27,9 +27,6 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [stringify](#stringifyobj "stringify")
 * [Timer](#timer "Timer")
 * [Bench](#bench "Bench")
-* [Binary Encoding/Decoding](#binary-encodingdecoding "Binary Encoding/Decoding")
-  * [base64urlEncode](#base64urlencodevalue "binary64urlEncode")
-  * [base64urlDecode](#base64urldecodevalue "binary64urlDecode")
 * [Escaping Characters](#escaping-characters "Escaping Characters")
   * [escapeHtml](#escapehtmlstring "escapeHtml")
   * [escapeHeaderAttribute](#escapeheaderattributeattribute "escapeHeaderAttribute")
@@ -44,7 +41,6 @@ Lead Maintainer: [Nathan LaFreniere](https://github.com/nlf)
   * [once](#oncefn "once")
   * [ignore](#ignore "ignore")
 * [Miscellaneous](#miscellaneous "Miscellaneous")
-  * [uniqueFilename](#uniquefilename "uniqueFilename")
   * [isInteger](#isInteger "isInteger")
 
 
@@ -362,15 +358,6 @@ console.log("Elapsed time from initialization: " + timerObj.elapsed() + 'millise
 Same as Timer with the exception that `ts` stores the internal node clock which is not related to `Date.now()` and cannot be used to display
 human-readable timestamps. More accurate for benchmarking or internal timers.
 
-# Binary Encoding/Decoding
-
-### base64urlEncode(value)
-
-Encodes value in Base64 or URL encoding
-
-### base64urlDecode(value)
-
-Decodes data in Base64 or URL encoding.
 # Escaping Characters
 
 Hoek provides convenient methods for escaping html characters. The escaped characters are as followed:
@@ -524,15 +511,6 @@ onceFn(); // results in undefined
 A simple no-op function. It does nothing at all.
 
 ## Miscellaneous
-
-### uniqueFilename(path, extension)
-`path` to prepend with the randomly generated file name. `extension` is the optional file extension, defaults to `''`.
-
-Returns a randomly generated file name at the specified `path`. The result is a fully resolved path to a file.
-
-```javascript
-var result = Hoek.uniqueFilename('./test/modules', 'txt'); // results in "full/path/test/modules/{random}.txt"
-```
 
 ### isInteger(value)
 

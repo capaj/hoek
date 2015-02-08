@@ -1,8 +1,8 @@
 {
-  "name": "hoek",
-  "description": "General purpose node utilities",
+  "name": "hoek-browser",
+  "description": "General purpose utilities",
   "version": "2.11.0",
-  "repository": "git://github.com/hapijs/hoek",
+  "repository": "git://github.com/capaj/hoek",
   "main": "index",
   "keywords": [
     "utilities"
@@ -16,12 +16,12 @@
     "lab": "5.x.x"
   },
   "scripts": {
-    "test": "make test-cov"
+    "test": "node_modules/.bin/lab"
   },
   "licenses": [
     {
       "type": "BSD",
-      "url": "http://github.com/hapijs/hoek/raw/master/LICENSE"
+      "url": "https://github.com/capaj/hoek/blob/master/LICENSE"
     }
   ]
 }
