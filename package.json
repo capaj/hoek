@@ -2,7 +2,7 @@
   "name": "hoek-browser",
   "description": "General purpose utilities",
   "version": "2.11.0",
-  "repository": "git://github.com/capaj/hoek",
+  "repository": "git://github.com/capaj/hoek-browser",
   "main": "index",
   "keywords": [
     "utilities"
